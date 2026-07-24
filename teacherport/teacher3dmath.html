@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數學素養實驗室 | 教師資源中心 - 幾何小探險</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'edu-blue': '#1A365D',      
+                        'edu-blue-dark': '#0f2442', 
+                        'edu-green': '#10B981',     
+                        'content-bg': '#F8FAFC'     
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 切換畫面的淡入動畫 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           背景動態流體 (固定在最底層)
+           ========================================= */
+        .fluid-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none; 
+            background-color: #FFFFFF;
+        }
+
+        .deco-blob {
+            position: absolute;
+            opacity: 0.5; /* 降低透明度當作背景 */
+        }
+
+        .blob-blue {
+            top: -100px;
+            left: -100px;
+            width: 450px;
+            height: 400px;
+            background-color: #38B6FF;
+            animation: fluid-blue 12s ease-in-out infinite alternate;
+        }
+
+        .blob-yellow {
+            bottom: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background-color: #FFDA44;
+            animation: fluid-yellow 14s ease-in-out infinite alternate;
+        }
+
+        .blob-green {
+            bottom: -150px;
+            right: -100px;
+            width: 550px;
+            height: 500px;
+            background-color: #85D65C;
+            animation: fluid-green 16s ease-in-out infinite alternate;
+        }
+
+        .blob-red-line {
+            top: -20px;
+            right: -20px;
+            animation: fluid-red-line 10s ease-in-out infinite alternate;
+            opacity: 0.8;
+        }
+
+        /* 流體動畫 Keyframes */
+        @keyframes fluid-blue {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0, 0) rotate(0deg); }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(20px, -10px) rotate(3deg); }
+            100% { border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; transform: translate(-10px, 20px) rotate(-2deg); }
+        }
+        @keyframes fluid-yellow {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: scale(1) translate(0, 0); }
+            50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1.02) translate(20px, -15px); }
+            100% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(0.98) translate(-10px, 10px); }
+        }
+        @keyframes fluid-green {
+            0% { border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; transform: translate(0, 0) rotate(0deg); }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(-20px, -15px) rotate(-3deg); }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(15px, 20px) rotate(2deg); }
+        }
+        @keyframes fluid-red-line {
+            0% { transform: translateY(0px) scale(1) rotate(0deg); }
+            50% { transform: translateY(15px) scale(1.05) rotate(1deg); }
+            100% { transform: translateY(-5px) scale(0.98) rotate(-1deg); }
+        }
+    </style>
+</head>
+<body class="bg-transparent h-screen flex flex-col font-sans overflow-hidden text-slate-700 relative z-0">
+
+    <!-- =========================================
+         背景流體動畫層
+         ========================================= -->
+    <div class="fluid-bg-container">
+        <div class="deco-blob blob-blue"></div>
+        <div class="deco-blob blob-yellow"></div>
+        <div class="deco-blob blob-green"></div>
+        <div class="deco-blob blob-red-line">
+            <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 -50 C 50 150, 200 200, 400 50" stroke="#FF3B30" stroke-width="5" fill="none" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- =========================================
+         頂部導覽列 (全透明融合設計，深咖啡色文字)
+         ========================================= -->
+    <header class="w-full px-6 md:px-10 py-5 flex justify-between items-center relative z-50 bg-transparent">
+        <div class="flex items-center gap-3 md:gap-4">
+            <!-- 裝飾圖示：白底毛玻璃 -->
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/70 backdrop-blur-md flex items-center justify-center border border-white/60 shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-2xl transition-transform hover:scale-105">
+                📐
+            </div>
+            <!-- 標題文字 -->
+            <span class="text-xl md:text-2xl font-black tracking-wider text-[#4A3A31] flex items-center">
+                數學素養實驗室 
+                <span class="hidden sm:flex text-sm font-bold text-slate-500/80 ml-3 md:ml-4 pl-3 md:pl-4 border-l-2 border-slate-300/50">
+                    教師資源中心
+                </span>
+            </span>
+        </div>
+        <!-- 右側按鈕已清空，保留乾淨版面 -->
+        <div></div>
+    </header>
+
+    <!-- 下方內容區 -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- ============================================== -->
+        <!-- 懸浮 Dock 導覽列 -->
+        <!-- ============================================== -->
+        <nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 md:bottom-auto md:left-6 md:top-1/2 md:-translate-y-1/2 z-40 flex md:flex-col gap-3 p-3 bg-white/70 backdrop-blur-lg border border-slate-200 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+            
+            <!-- 數學幾何 (teachergeometry.html) -->
+            <a href="teachergeometry.html" class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/80 hover:bg-white text-2xl transition-all duration-300 shadow-sm border border-slate-100 hover:scale-110 cursor-pointer">
+                🔺
+                <span class="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap hidden md:block z-50">
+                    低年級：數學幾何
+                </span>
+            </a>
+
+            <!-- 目前所在頁面：幾何小探險 (teacher3dmath.html) -->
+            <a href="teacher3dmath.html" class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-edu-blue text-white text-2xl transition-all duration-300 shadow-md shadow-blue-900/20 hover:scale-110 cursor-pointer">
+                🧊
+                <span class="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap hidden md:block z-50">
+                    低年級：幾何小探險
+                </span>
+            </a>
+
+            <!-- 液體 (midgradeteacherliquid.html) -->
+            <a href="midgradeteacherliquid.html" class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/80 hover:bg-white text-2xl transition-all duration-300 shadow-sm border border-slate-100 hover:scale-110 cursor-pointer">
+                💧
+                <span class="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap hidden md:block z-50">
+                    中年級：液體
+                </span>
+            </a>
+
+            <!-- 角度 (midgradeteacherprotractor.html) -->
+            <a href="midgradeteacherprotractor.html" class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/80 hover:bg-white text-2xl transition-all duration-300 shadow-sm border border-slate-100 hover:scale-110 cursor-pointer">
+                📐
+                <span class="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap hidden md:block z-50">
+                    中年級：角度
+                </span>
+            </a>
+
+            <!-- 比例 (highgraderatio.html) -->
+            <a href="highgraderatio.html" class="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/80 hover:bg-white text-2xl transition-all duration-300 shadow-sm border border-slate-100 hover:scale-110 cursor-pointer">
+                ⚗️
+                <span class="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap hidden md:block z-50">
+                    高年級：比例
+                </span>
+            </a>
+        </nav>
+
+        <!-- 主內容區 -->
+        <main class="flex-1 overflow-y-auto overflow-x-hidden p-5 md:pl-32 md:pr-10 md:py-10 bg-transparent w-full flex flex-col pb-24 md:pb-10 relative z-10">
+            
+            <!-- 麵包屑導覽 (毛玻璃) -->
+            <div class="text-xs md:text-sm font-medium text-slate-500 mb-6 md:mb-8 flex flex-wrap items-center gap-2 bg-white/80 backdrop-blur-md px-4 md:px-5 py-2.5 rounded-xl shadow-sm border border-white/50 inline-flex max-w-full w-max">
+                <a href="page3.html" class="hover:text-edu-blue cursor-pointer transition-colors whitespace-nowrap">教具目錄</a> <span class="text-slate-300">&gt;</span> 
+                <span class="hover:text-edu-blue cursor-pointer transition-colors whitespace-nowrap">低年級</span> <span class="text-slate-300">&gt;</span> 
+                <span class="text-edu-blue font-bold whitespace-nowrap">幾何小探險</span>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 區塊 1：教具預覽卡片 (毛玻璃) -->
+            <!-- ============================================== -->
+            <div id="view-cards" class="flex flex-col items-center justify-center animate-[fadeIn_0.3s_ease-in-out] w-full max-w-2xl mx-auto mt-4 md:mt-10">
+                
+                <div class="group bg-white/85 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/60 overflow-hidden hover:shadow-[0_20px_40px_rgba(26,54,93,0.12)] transition-all duration-500 flex flex-col w-full relative">
+                    <div class="p-8 md:p-10 flex flex-col relative z-10">
+                        <div class="flex justify-between items-start mb-8">
+                            <span class="bg-slate-100/80 text-slate-600 text-xs px-4 py-1.5 rounded-full font-bold border border-slate-200/50 tracking-wider">低年級</span>
+                            <span class="bg-indigo-50/80 text-indigo-600 text-xs font-bold px-4 py-1.5 rounded-md border border-indigo-100/50">S-1-1</span>
+                        </div>
+
+                        <!-- 縮圖區 -->
+                        <div class="h-48 md:h-64 bg-white/60 rounded-2xl flex items-center justify-center mb-8 text-7xl border border-white/80 transition-colors shadow-inner">
+                            🧊
+                        </div>
+
+                        <div class="mb-10 text-center">
+                            <h3 class="font-black text-2xl md:text-3xl text-edu-blue mb-4">幾何小探險</h3>
+                            <p class="text-slate-600 text-sm md:text-base leading-relaxed max-w-lg mx-auto font-medium">
+                                透過 3D 展開圖與三視圖練習，培養空間幾何感。
+                            </p>
+                        </div>
+
+                        <div class="flex items-center justify-center">
+                            <!-- 觸發載入教具 -->
+                            <button onclick="openTool('../firstgrade/firstgrade3dmath.html', '低年級 幾何小探險')" class="flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3.5 px-10 rounded-full transition-all duration-300 shadow-lg shadow-indigo-900/30 hover:-translate-y-1 text-base md:text-lg cursor-pointer w-full md:w-auto">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+                                進入教具
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           <!-- ============================================== -->
+            <!-- 區塊 2：教具播放區 (iframe) -->
+            <!-- ============================================== -->
+            <div id="view-iframe" class="hidden flex-1 flex-col w-full min-h-[800px] animate-[fadeIn_0.3s_ease-in-out]">
+                
+                <!-- 頂部控制列 -->
+                <div class="flex justify-between items-center mb-4 bg-white/90 backdrop-blur-md p-3 md:p-4 rounded-xl shadow-sm border border-white/50">
+                    <h2 id="iframe-title" class="text-lg md:text-xl font-black text-edu-blue flex items-center gap-2">
+                        <span class="text-2xl">🎮</span> 教具載入中...
+                    </h2>
+                    
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleFullScreen()" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-blue-50/80 hover:bg-blue-100 text-blue-600 rounded-lg font-bold transition-colors text-sm border border-blue-200/50 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                            全螢幕
+                        </button>
+                        <button onclick="closeTool()" class="flex items-center gap-2 px-4 py-2 bg-slate-100/80 hover:bg-red-50 hover:text-red-600 text-slate-600 rounded-lg font-bold transition-colors text-sm border border-slate-200/50 hover:border-red-200 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            返回
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ⭐ 新增：教具教學指引說明區塊 (幾何小探險專屬) ⭐ -->
+                <div class="mb-4 px-5 py-4 bg-white/80 backdrop-blur-md rounded-xl border border-white/50 shadow-sm flex items-start gap-4 animate-[fadeIn_0.5s_ease-in-out]">
+                    <!-- 配合幾何小探險的主題色，改用 indigo 靛藍色系 -->
+                    <div class="bg-indigo-50/80 p-2 rounded-lg text-indigo-600 text-xl shadow-inner border border-indigo-100/50 mt-0.5">
+                        💡
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 text-base mb-1">教具使用指引</h3>
+                        <p class="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
+                            本教具帶領學生進入 3D 立體的世界。老師可引導學生觀察立體圖形的「展開圖」動態折疊過程，或是透過切換不同的視角（三視圖），讓學生直觀地理解平面與立體結構之間的轉換關係，有效培養空間幾何直覺。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 畫框載體 (iframe) -->
+                <div class="flex-1 bg-white/80 backdrop-blur-xl rounded-xl shadow-inner border border-white/50 overflow-hidden relative">
+                    <div class="absolute inset-0 flex items-center justify-center text-slate-400 flex-col gap-3 -z-10">
+                        <svg class="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <p class="font-medium tracking-wider">教具環境準備中...</p>
+                    </div>
+                    <!-- iframe 載入真正的教具 -->
+                    <iframe id="tool-iframe" src="" class="w-full h-full border-none relative z-10 bg-transparent" title="教具操作畫面"></iframe>
+                </div>
+            </div>
+
+    <script>
+        const viewCards = document.getElementById('view-cards');
+        const viewIframe = document.getElementById('view-iframe');
+        const toolIframe = document.getElementById('tool-iframe');
+        const iframeTitle = document.getElementById('iframe-title');
+
+        function openTool(url, title) {
+            viewCards.classList.add('hidden');
+            viewIframe.classList.remove('hidden');
+            viewIframe.classList.add('flex'); 
+            
+            iframeTitle.innerHTML = `<span class="text-2xl">🎮</span> ${title}`;
+            toolIframe.src = url;
+        }
+
+        function closeTool() {
+            viewIframe.classList.add('hidden');
+            viewIframe.classList.remove('flex');
+            viewCards.classList.remove('hidden');
+            toolIframe.src = ''; 
+        }
+
+        function toggleFullScreen() {
+            const elem = document.getElementById('tool-iframe');
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) elem.requestFullscreen();
+                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+                else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>

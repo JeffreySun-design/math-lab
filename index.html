@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數學虛擬實驗室 - 首頁</title>
+  <style>
+    /* 基礎重置與字體設定 */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+      background-color: #FFFFFF;
+      overflow: hidden; 
+      position: relative;
+    }
+
+    /* 置中主要內容容器 */
+    .center-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+
+    /* 標題樣式 */
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #4A3A31; 
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+    }
+
+    /* 「點擊進入」按鈕樣式 */
+    .enter-btn {
+      display: inline-block;
+      padding: 12px 48px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #000000;
+      background-color: #FFFFFF;
+      border: 2px solid #000000;
+      border-radius: 50px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .enter-btn:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* =========================================
+       背景裝飾色塊 (放大與高階流體動畫)
+       ========================================= */
+    .deco-blob {
+      position: absolute;
+      z-index: 1;
+    }
+
+    /* 左上藍色大流體 */
+    .blob-blue {
+      top: -150px;
+      left: -150px;
+      width: 550px;
+      height: 500px;
+      background-color: #38B6FF;
+      animation: fluid-blue 12s ease-in-out infinite alternate;
+    }
+
+    /* 左下黃色大流體 */
+    .blob-yellow {
+      bottom: -200px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background-color: #FFDA44;
+      animation: fluid-yellow 14s ease-in-out infinite alternate;
+    }
+
+    /* 右下綠色大流體 */
+    .blob-green {
+      bottom: -300px;
+      right: -200px;
+      width: 750px;
+      height: 700px;
+      background-color: #85D65C;
+      animation: fluid-green 16s ease-in-out infinite alternate;
+    }
+
+    /* 右上紅色波浪線 (連同放大並增加流體漂浮感) */
+    .blob-red-line {
+      top: -50px;
+      right: -50px;
+      animation: fluid-red-line 10s ease-in-out infinite alternate;
+    }
+
+    /* --- 高階流體動畫 Keyframes --- */
+    
+    @keyframes fluid-blue {
+      0% { 
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+        transform: translate(0, 0) rotate(0deg); 
+      }
+      50% { 
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; 
+        transform: translate(30px, -20px) rotate(5deg); 
+      }
+      100% { 
+        border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; 
+        transform: translate(-20px, 30px) rotate(-3deg); 
+      }
+    }
+
+    @keyframes fluid-yellow {
+      0% { 
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+        transform: scale(1) translate(0, 0); 
+      }
+      50% { 
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+        transform: scale(1.05) translate(40px, -30px); 
+      }
+      100% { 
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; 
+        transform: scale(0.95) translate(-20px, 20px); 
+      }
+    }
+
+    @keyframes fluid-green {
+      0% { 
+        border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; 
+        transform: translate(0, 0) rotate(0deg); 
+      }
+      50% { 
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; 
+        transform: translate(-40px, -30px) rotate(-5deg); 
+      }
+      100% { 
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+        transform: translate(30px, 40px) rotate(3deg); 
+      }
+    }
+
+    @keyframes fluid-red-line {
+      0% { transform: translateY(0px) scale(1) rotate(0deg); }
+      50% { transform: translateY(30px) scale(1.1) rotate(2deg); }
+      100% { transform: translateY(-10px) scale(0.95) rotate(-1deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景裝飾元素 -->
+  <div class="deco-blob blob-blue"></div>
+  <div class="deco-blob blob-yellow"></div>
+  <div class="deco-blob blob-green"></div>
+  
+  <!-- 右上角紅色波浪線 SVG (加大尺寸) -->
+  <div class="deco-blob blob-red-line">
+    <svg width="450" height="350" viewBox="0 0 450 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 加粗線條並拉大波浪弧度 -->
+      <path d="M50 -50 C 50 180, 250 250, 450 50" stroke="#FF3B30" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- 中央主要內容 -->
+  <main class="center-content">
+    <h1>數學虛擬實驗室</h1>
+    <!-- 點擊後跳轉到平台介紹頁 -->
+    <a href="page2.html" class="enter-btn">點擊進入</a>
+  </main>
+
+</body>
+</html>

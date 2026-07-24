@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 協作式國小數學虛擬實驗室 - 教具目錄</title>
+  <style>
+    /* 全域設定與排版 */
+    body {
+      font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+      background-color: #FFFFFF;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    header p {
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* 搜尋與導覽列 */
+    .nav-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .search-box {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px 24px;
+      border: 1px solid #E5E7EB;
+      border-radius: 30px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .search-box:focus {
+      border-color: #9CA3AF;
+    }
+    .filters {
+      display: flex;
+      gap: 32px;
+    }
+    .filters button {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: #9CA3AF;
+      cursor: pointer;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .filters button.active, .filters button:hover {
+      color: #111;
+      border-bottom-color: #111;
+    }
+
+    /* 年級區塊與標題 */
+    .content-wrapper {
+      flex-grow: 1;
+    }
+    .grade-section {
+      margin-bottom: 80px;
+    }
+    .grade-header {
+      font-size: 1.5rem;
+      color: #111;
+      border-bottom: 1px solid #E5E7EB;
+      padding-bottom: 12px;
+      margin-bottom: 32px;
+    }
+
+    /* 核心卡片設計 */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #F9FAFB;
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 各年級單一主色設定 */
+    .theme-blue { --accent: #3B82F6; }
+    .theme-green { --accent: #10B981; }
+    .theme-orange { --accent: #F59E0B; }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #111;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 12px 0;
+    }
+    .card-icon {
+      font-size: 1.5rem;
+    }
+    .card-desc {
+      color: #6B7280;
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+      flex-grow: 1;
+    }
+    .card-action {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-action::after {
+      content: '→';
+      transition: transform 0.3s ease;
+    }
+    .card:hover .card-action::after {
+      transform: translateX(4px);
+    }
+
+    /* 找不到結果的空狀態設計 */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6B7280;
+      display: none;
+    }
+    .empty-state .emoji {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    .empty-state h3 {
+      font-size: 1.5rem;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      margin-top: 40px;
+      border-top: 1px solid #E5E7EB;
+      color: #9CA3AF;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>教具目錄</h1>
+      <p>點擊下方卡片，立即進入各年級的專屬數學虛擬實驗室。</p>
+    </header>
+
+    <!-- 搜尋與過濾 -->
+    <div class="nav-controls">
+      <input type="text" id="searchInput" class="search-box" placeholder="🔍 搜尋教具，例如「角度」...">
+      <div class="filters">
+        <button class="active" onclick="filterGrade('all', this)">全部</button>
+        <button onclick="filterGrade('low', this)">低年級</button>
+        <button onclick="filterGrade('mid', this)">中年級</button>
+        <button onclick="filterGrade('high', this)">高年級</button>
+      </div>
+    </div>
+
+    <!-- 內容區塊 -->
+    <div class="content-wrapper">
+      
+      <!-- 低年級區塊 -->
+      <section class="grade-section" id="low-grade">
+        <h2 class="grade-header">低年級</h2>
+        <div class="card-grid">
+          <!-- 加入 teacherport/ 前綴 -->
+          <div class="card theme-blue" onclick="window.location.href='teacherport/teacher3dmath.html'">
+            <h3 class="card-title">數學幾何 <span class="card-icon">🔺</span></h3>
+            <p class="card-desc">探索基本幾何圖形與空間概念，建立形狀認知。</p>
+            <div class="card-action">開始操作</div>
+          </div>
+          <div class="card theme-blue" onclick="window.location.href='teacherport/teachergeometry.html'">
+            <h3 class="card-title">幾何小探險 <span class="card-icon">🗺️</span></h3>
+            <p class="card-desc">透過趣味互動，在探險場景中認識不同的幾何特徵。</p>
+            <div class="card-action">開始操作</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 中年級區塊 -->
+      <section class="grade-section" id="mid-grade">
+        <h2 class="grade-header">中年級</h2>
+        <div class="card-grid">
+          <!-- 加入 teacherport/ 前綴 -->
+          <div class="card theme-green" onclick="window.location.href='teacherport/midgradeteacherliquid.html'">
+            <h3 class="card-title">液體 <span class="card-icon">💧</span></h3>
+            <p class="card-desc">觀察容器變化，理解液體容量的測量與比較概念。</p>
+            <div class="card-action">開始操作</div>
+          </div>
+          <div class="card theme-green" onclick="window.location.href='teacherport/midgradeteacherprotractor.html'">
+            <h3 class="card-title">角度 <span class="card-icon">📐</span></h3>
+            <p class="card-desc">動態拖曳射線，探索幾何角度的關係與測量方式。</p>
+            <div class="card-action">開始操作</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 高年級區塊 -->
+      <section class="grade-section" id="high-grade">
+        <h2 class="grade-header">高年級</h2>
+        <div class="card-grid">
+          <!-- 加入 teacherport/ 前綴 -->
+          <div class="card theme-orange" onclick="window.location.href='teacherport/highgraderatio.html'">
+            <h3 class="card-title">比例 <span class="card-icon">⚗️</span></h3>
+            <p class="card-desc">自由調整參數，直觀理解比率與正反比的對應關係。</p>
+            <div class="card-action">開始操作</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 找不到結果的提示 -->
+      <div id="empty-state" class="empty-state">
+        <div class="emoji">🔍</div>
+        <h3>找不到符合的教具</h3>
+        <p>請嘗試使用其他關鍵字搜尋，例如：「角度」、「比例」</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>AI 協作式國小數學虛擬實驗室<br>
+      © 2026 Designed for Graduation Project</p>
+    </footer>
+  </div>
+
+  <script>
+    let currentGrade = 'all';
+    let isComposing = false; 
+
+    function filterGrade(grade, btn) {
+      currentGrade = grade;
+      document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+      let totalVisibleCards = 0; 
+      
+      const sections = {
+        'low': document.getElementById('low-grade'),
+        'mid': document.getElementById('mid-grade'),
+        'high': document.getElementById('high-grade')
+      };
+
+      for (const [gradeKey, sectionEl] of Object.entries(sections)) {
+        let hasVisibleCards = false;
+        const cards = sectionEl.querySelectorAll('.card');
+
+        cards.forEach(card => {
+          const title = card.querySelector('.card-title').innerText.toLowerCase();
+          const desc = card.querySelector('.card-desc').innerText.toLowerCase();
+          
+          const matchesSearch = title.includes(searchText) || desc.includes(searchText);
+          const matchesGrade = (currentGrade === 'all' || currentGrade === gradeKey);
+
+          if (matchesSearch && matchesGrade) {
+            card.style.display = 'flex';
+            hasVisibleCards = true;
+            totalVisibleCards++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        sectionEl.style.display = hasVisibleCards ? 'block' : 'none';
+      }
+
+      const emptyStateEl = document.getElementById('empty-state');
+      if (totalVisibleCards === 0) {
+        emptyStateEl.style.display = 'block';
+      } else {
+        emptyStateEl.style.display = 'none';
+      }
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('compositionstart', () => {
+      isComposing = true;
+    });
+
+    searchInput.addEventListener('compositionend', () => {
+      isComposing = false;
+      applyFilters(); 
+    });
+
+    searchInput.addEventListener('input', () => {
+      if (!isComposing) {
+        applyFilters(); 
+      }
+    });
+  </script>
+</body>
+</html>

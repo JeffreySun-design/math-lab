@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數學虛擬實驗室 - 平台理念</title>
+  <style>
+    /* 基礎重置與字體設定 */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+      background-color: #FFFFFF;
+      color: #333;
+      line-height: 1.6;
+      /* 注意：內容頁不鎖死 overflow，讓頁面可以自然滾動 */
+    }
+
+    /* =========================================
+       背景動態流體 (固定在最底層，不影響內容滾動)
+       ========================================= */
+    .fluid-bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -1;
+      pointer-events: none; /* 讓滑鼠點擊可以穿透背景 */
+    }
+
+    .deco-blob {
+      position: absolute;
+    }
+
+    /* 延續首頁的流體設定，稍微調整位置讓出中間閱讀區 */
+    .blob-blue {
+      top: -100px;
+      left: -100px;
+      width: 450px;
+      height: 400px;
+      background-color: #38B6FF;
+      animation: fluid-blue 12s ease-in-out infinite alternate;
+      opacity: 0.6; /* 稍微降低透明度，不搶走文字焦點 */
+    }
+
+    .blob-yellow {
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      background-color: #FFDA44;
+      animation: fluid-yellow 14s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+
+    .blob-green {
+      bottom: -150px;
+      right: -100px;
+      width: 550px;
+      height: 500px;
+      background-color: #85D65C;
+      animation: fluid-green 16s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+
+    .blob-red-line {
+      top: -20px;
+      right: -20px;
+      animation: fluid-red-line 10s ease-in-out infinite alternate;
+    }
+
+    /* 動畫 Keyframes */
+    @keyframes fluid-blue {
+      0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0, 0) rotate(0deg); }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(20px, -10px) rotate(3deg); }
+      100% { border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; transform: translate(-10px, 20px) rotate(-2deg); }
+    }
+    @keyframes fluid-yellow {
+      0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: scale(1) translate(0, 0); }
+      50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1.02) translate(20px, -15px); }
+      100% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(0.98) translate(-10px, 10px); }
+    }
+    @keyframes fluid-green {
+      0% { border-radius: 50% 50% 30% 70% / 70% 30% 50% 40%; transform: translate(0, 0) rotate(0deg); }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(-20px, -15px) rotate(-3deg); }
+      100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(15px, 20px) rotate(2deg); }
+    }
+    @keyframes fluid-red-line {
+      0% { transform: translateY(0px) scale(1) rotate(0deg); }
+      50% { transform: translateY(15px) scale(1.05) rotate(1deg); }
+      100% { transform: translateY(-5px) scale(0.98) rotate(-1deg); }
+    }
+
+    /* =========================================
+       主要內容區塊
+       ========================================= */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 80px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* 小標籤 */
+    .eyebrow {
+      color: #4A3A31;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    /* 核心標題 (同首頁的深咖啡色) */
+    .main-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #4A3A31;
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+    }
+    
+    /* 引言段落 */
+    .intro-text {
+      text-align: center;
+      color: #555;
+      font-size: 1.15rem;
+      max-width: 750px;
+      margin: 0 auto 60px auto;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+
+    /* 三欄卡片設計 */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      width: 100%;
+      margin-bottom: 60px;
+    }
+
+    /* 加上毛玻璃 (Glassmorphism) 效果 */
+    .feature-card {
+      background-color: rgba(255, 255, 255, 0.85); /* 半透明白色 */
+      backdrop-filter: blur(12px); /* 背景模糊 */
+      -webkit-backdrop-filter: blur(12px); /* 支援 Safari */
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 16px;
+    }
+
+    .card-desc {
+      color: #444;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* 進入目錄按鈕 (同步首頁風格) */
+    .next-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 48px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #000000;
+      background-color: #FFFFFF;
+      border: 2px solid #000000;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .next-btn:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .next-btn::after {
+      content: '→';
+      transition: transform 0.3s ease;
+    }
+    .next-btn:hover::after {
+      transform: translateX(5px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================
+       背景流體動畫層
+       ========================================= -->
+  <div class="fluid-bg-container">
+    <div class="deco-blob blob-blue"></div>
+    <div class="deco-blob blob-yellow"></div>
+    <div class="deco-blob blob-green"></div>
+    
+    <div class="deco-blob blob-red-line">
+      <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 -50 C 50 150, 200 200, 400 50" stroke="#FF3B30" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- =========================================
+       主要內容層
+       ========================================= -->
+  <div class="container">
+    
+    <div class="eyebrow">平台理念</div>
+    <h1 class="main-title">不只是寫題目，而是讓數學變得有趣</h1>
+    
+    <p class="intro-text">
+      這套教具不是在教你怎麼算，而是讓你自己發現數學是怎麼運作的。透過拖曳、調整與實驗，把原本抽象的概念變成看得到、動得起來的東西。你會先用直覺猜，再透過操作驗證，最後發現原來數學其實有邏輯，而不是死背。
+    </p>
+
+    <!-- 特色卡片區塊 -->
+    <div class="features-grid">
+      <!-- 卡片 1 -->
+      <div class="feature-card">
+        <div class="card-icon">🔍</div>
+        <h3 class="card-title">視覺化抽象概念</h3>
+        <p class="card-desc">
+          傳統教學常受限於紙本的靜態性。我們觀察到，學生在學習幾何分割或空間變化時常遇到瓶頸。透過將抽象數值轉化為直觀的操作體驗，幫助學生從死背公式轉向直觀的感受與理解。
+        </p>
+      </div>
+
+      <!-- 卡片 2 -->
+      <div class="feature-card">
+        <div class="card-icon">⚙️</div>
+        <h3 class="card-title">操作方式</h3>
+        <p class="card-desc">
+          操作很簡單：拖一拖：移動圖形、調整數值；試一試：改變條件觀察變化；猜一猜：先做判斷再看結果。你不需要記住公式，在過程中自然會理解它為什麼成立。
+        </p>
+      </div>
+
+      <!-- 卡片 3 -->
+      <div class="feature-card">
+        <div class="card-icon">🎯</div>
+        <h3 class="card-title">對接 108 課綱</h3>
+        <p class="card-desc">
+          不只提供題庫，更著重於「輔助思考教學」。緊扣 108 課綱精神，提供完整的教案指引與素養題庫，成為教育者引導學生解決真實問題的最得力輔助工具。
+        </p>
+      </div>
+    </div>
+
+    <!-- 導向 Page 3 的按鈕 -->
+    <a href="page3.html" class="next-btn">進入虛擬實驗室</a>
+
+  </div>
+
+</body>
+</html>
