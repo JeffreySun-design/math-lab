@@ -399,8 +399,8 @@
                   <h3 className="text-xl font-bold text-gray-800 mb-4">{mode === 'view' ? '觀察三視圖' : mode === 'quiz' ? '隨堂測驗' : '創作模式'}</h3>
                   <div className="flex justify-center gap-8 mb-6 flex-wrap">
                      <Grid2DView title="上視圖 (Top)" data={mode!=='quiz'?getTopView(activeGrid):userTop} color="bg-green-400" userAnswer={mode==='quiz'?userTop:undefined} isInteractive={mode!=='view'} onToggle={mode==='quiz'?(r,c)=>toggleGrid(userTop,setUserTop,r,c):mode==='builder'?(r,c)=>handleBuilderClick('top',r,c):undefined} />
-                     <Grid2DView title="前視圖 (Front)" data={mode!=='quiz'?getFrontView(activeGrid):userFront} color="bg-purple-400" userAnswer={mode==='quiz'?userFront:undefined} isInteractive={mode!=='view'} onToggle={mode==='quiz'?(r,c)=>toggleGrid(userFront,setUserFront,r,c):mode==='builder'?(r,c)=>handleBuilderClick('front',r,c):undefined} />
-                     <Grid2DView title="右視圖 (Right)" data={mode!=='quiz'?getRightView(activeGrid):userRight} color="bg-yellow-400" userAnswer={mode==='quiz'?userRight:undefined} isInteractive={mode!=='view'} onToggle={mode==='quiz'?(r,c)=>toggleGrid(userRight,setUserRight,r,c):mode==='builder'?(r,c)=>handleBuilderClick('right',r,c):undefined} />
+                     <Grid2DView title="右視圖 (Front)" data={mode!=='quiz'?getFrontView(activeGrid):userFront} color="bg-purple-400" userAnswer={mode==='quiz'?userFront:undefined} isInteractive={mode!=='view'} onToggle={mode==='quiz'?(r,c)=>toggleGrid(userFront,setUserFront,r,c):mode==='builder'?(r,c)=>handleBuilderClick('front',r,c):undefined} />
+                     <Grid2DView title="前視圖 (Right)" data={mode!=='quiz'?getRightView(activeGrid):userRight} color="bg-yellow-400" userAnswer={mode==='quiz'?userRight:undefined} isInteractive={mode!=='view'} onToggle={mode==='quiz'?(r,c)=>toggleGrid(userRight,setUserRight,r,c):mode==='builder'?(r,c)=>handleBuilderClick('right',r,c):undefined} />
                   </div>
                   {mode === 'quiz' && (
                     <div className="text-center">
